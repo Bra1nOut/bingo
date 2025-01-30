@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Grille Interactive</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+		}
+		.container {
+			width: 90%;
+			max-width: 1000px;
+			margin: 0 auto;
+		}
+		.table-container {
+			display: grid;
+			grid-template-columns: repeat(10, 1fr); /* 10 colonnes */
+			gap: 10px;
+			padding: 20px;
+		}
+		.cell {
+			width: 100%;
+			aspect-ratio: 1; /* Garder les cases carrées */
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: #ffffff;
+			border: 2px solid #ddd;
+			border-radius: 10px;
+			cursor: pointer;
+			user-select: none;
+			font-weight: bold;
+			font-size: 24px;
+			color: #333;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		}
+		.cell:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+		}
+		.cell.colored {
+			background-color: #ff4757;
+			color: white;
+			border-color: #ff4757;
+		}
+		.popup {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 200px;
+			height: 200px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 80px;
+			font-weight: bold;
+			background-color: #ff4757;
+			color: white;
+			border-radius: 50%;
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+			z-index: 1000;
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 0.3s ease, visibility 0.3s ease;
+		}
+		.popup.visible {
+			opacity: 1;
+			visibility: visible;
+		}
+		.overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 999;
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 0.3s ease, visibility 0.3s ease;
+		}
+		.overlay.visible {
+			opacity: 1;
+			visibility: visible;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="table-container" id="numberTable"></div>
+		<div id="overlay" class="overlay"></div>
+		<div id="popup" class="popup" aria-hidden="true"></div>
+	</div>
+
+	<script>
+		const tableContainer = document.getElementById("numberTable");
+		const popup = document.getElementById("popup");
+		const overlay = document.getElementById("overlay");
+
+		// Générer la grille de 90 cases (9 lignes de 10 colonnes)
+		for (let i = 1; i <= 90; i++) {
+			const cell = document.createElement("div");
+			cell.className = "cell";
+			cell.textContent = i;
+			cell.setAttribute("role", "button");
+			cell.setAttribute("aria-label", `Numéro ${i}`);
+
+			cell.addEventListener("click", () => {
+				popup.textContent = i;
+				popup.setAttribute("aria-hidden", "false");
+				popup.classList.add("visible");
+				overlay.classList.add("visible");
+
+				cell.classList.add("colored");
+			});
+
+			tableContainer.appendChild(cell);
+		}
+
+		// Fermer le popup en cliquant à l'extérieur
+		overlay.addEventListener("click", () => {
+			popup.classList.remove("visible");
+			overlay.classList.remove("visible");
+			popup.setAttribute("aria-hidden", "true");
+		});
+	</script>
+</body>
+</html>
